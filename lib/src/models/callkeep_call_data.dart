@@ -24,6 +24,7 @@ class CallKeepCallData extends CallKeepBaseData {
   /// Whether call is accepted or not, defaults to false
   final bool isAccepted;
 
+  // ignore: use_super_parameters
   CallKeepCallData({
     required String uuid,
     this.callerName,
