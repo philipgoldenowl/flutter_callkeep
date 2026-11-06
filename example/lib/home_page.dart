@@ -7,6 +7,7 @@ import 'package:flutter_callkeep_example/navigation_service.dart';
 import 'package:http/http.dart';
 import 'package:uuid/uuid.dart';
 
+// ignore: use_key_in_widget_constructors
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +23,7 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _uuid = Uuid();
+    _uuid = const Uuid();
     _currentUuid = "";
     textEvents = "";
     initCurrentCall();
@@ -36,35 +37,35 @@ class HomePageState extends State<HomePage> {
         title: const Text('Plugin example app'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.call,
               color: Colors.white,
             ),
             onPressed: makeFakeCallInComing,
           ),
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.call_end,
               color: Colors.white,
             ),
             onPressed: endCurrentCall,
           ),
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.call_made,
               color: Colors.white,
             ),
             onPressed: startOutGoingCall,
           ),
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.call_merge,
               color: Colors.white,
             ),
             onPressed: activeCalls,
           ),
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.clear_all_sharp,
               color: Colors.white,
             ),
@@ -80,11 +81,11 @@ class HomePageState extends State<HomePage> {
                 constraints: BoxConstraints(
                   minHeight: viewportConstraints.maxHeight,
                 ),
-                child: Text('$textEvents'),
+                child: Text(textEvents),
               ),
             );
           } else {
-            return Center(
+            return const Center(
               child: Text('No Event'),
             );
           }
@@ -94,10 +95,8 @@ class HomePageState extends State<HomePage> {
   }
 
   initCurrentCall() async {
-    //check current call from pushkit if possible
     var calls = await CallKeep.instance.activeCalls();
     if (calls.isNotEmpty) {
-      print('DATA: $calls');
       _currentUuid = calls[0].uuid;
       return calls[0];
     }
@@ -109,7 +108,7 @@ class HomePageState extends State<HomePage> {
 
       final config = CallKeepIncomingConfig(
         uuid: _currentUuid ?? '',
-        callerName: 'Hien Nguyen',
+        callerName: 'Nguyen',
         appName: 'CallKeep',
         avatar: 'https://i.pravatar.cc/100',
         handle: '0123456789',
@@ -160,7 +159,7 @@ class HomePageState extends State<HomePage> {
     _currentUuid = _uuid.v4();
     final params = CallKeepOutgoingConfig(
       uuid: _currentUuid ?? '',
-      callerName: 'Hien Nguyen',
+      callerName: 'N Nguyen',
       handle: '0123456789',
       hasVideo: true,
       extra: <String, dynamic>{'userId': '1a2b3c4d'},
@@ -171,6 +170,7 @@ class HomePageState extends State<HomePage> {
 
   Future<void> activeCalls() async {
     var calls = await CallKeep.instance.activeCalls();
+    // ignore: avoid_print
     print(calls);
   }
 
@@ -180,25 +180,24 @@ class HomePageState extends State<HomePage> {
 
   Future<void> getDevicePushTokenVoIP() async {
     var devicePushTokenVoIP = await CallKeep.instance.getDevicePushTokenVoIP();
+    // ignore: avoid_print
     print(devicePushTokenVoIP);
   }
 
   Future<void> listenerEvent(Function? callback) async {
     try {
       CallKeep.instance.onEvent.listen((event) async {
-        // TODO: Implement other events
         if (event == null) return;
         switch (event.type) {
           case CallKeepEventType.callAccept:
             final data = event.data as CallKeepCallData;
-            print('call answered: ${data.toMap()}');
-            NavigationService.instance
-                .pushNamedIfNotCurrent(AppRoute.callingPage, args: data.toMap());
+            NavigationService.instance.pushNamedIfNotCurrent(
+                AppRoute.callingPage,
+                args: data.toMap());
             if (callback != null) callback.call(event);
             break;
           case CallKeepEventType.callDecline:
             final data = event.data as CallKeepCallData;
-            print('call declined: ${data.toMap()}');
             await requestHttp("ACTION_CALL_DECLINE_FROM_DART");
             if (callback != null) callback.call(data);
             break;
@@ -206,12 +205,15 @@ class HomePageState extends State<HomePage> {
             break;
         }
       });
-    } on Exception {}
+    } on Exception {
+      //print('Error listening event: $e');
+    }
   }
 
   //check with https://webhook.site/#!/2748bc41-8599-4093-b8ad-93fd328f1cd2
   Future<void> requestHttp(content) async {
-    get(Uri.parse('https://webhook.site/2748bc41-8599-4093-b8ad-93fd328f1cd2?data=$content'));
+    get(Uri.parse(
+        'https://webhook.site/2748bc41-8599-4093-b8ad-93fd328f1cd2?data=$content'));
   }
 
   onEvent(event) {

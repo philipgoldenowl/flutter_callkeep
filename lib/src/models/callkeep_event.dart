@@ -113,6 +113,7 @@ class CallKeepHoldEvent extends CallKeepEvent {
 class CallKeepCallGroupEvent extends CallKeepEvent {
   final CallGroupToggleData data;
 
+  // ignore: use_super_parameters
   CallKeepCallGroupEvent({
     CallKeepEventType type = CallKeepEventType.callGroupToggled,
     required this.data,

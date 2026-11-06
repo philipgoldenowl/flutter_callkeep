@@ -5,6 +5,7 @@ import 'package:flutter_callkeep/flutter_callkeep.dart';
 import 'package:flutter_callkeep_example/navigation_service.dart';
 import 'package:http/http.dart';
 
+// ignore: use_key_in_widget_constructors
 class CallingPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -17,13 +18,13 @@ class CallingPageState extends State<CallingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final params =
-        jsonDecode(jsonEncode(ModalRoute.of(context)!.settings.arguments as Map<dynamic, dynamic>));
+    final params = jsonDecode(jsonEncode(
+        ModalRoute.of(context)!.settings.arguments as Map<dynamic, dynamic>));
     calling = CallKeepCallData.fromMap(params);
     debugPrint(calling?.toString());
 
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: double.infinity,
         child: Center(
@@ -31,10 +32,12 @@ class CallingPageState extends State<CallingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('Calling...'),
+              const Text('Calling...'),
               TextButton(
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                  foregroundColor:
+                      // ignore: deprecated_member_use
+                      MaterialStateProperty.all<Color>(Colors.blue),
                 ),
                 onPressed: () async {
                   if (calling != null) {
@@ -44,7 +47,7 @@ class CallingPageState extends State<CallingPage> {
                   NavigationService.instance.goBack();
                   await requestHttp('END_CALL');
                 },
-                child: Text('End Call'),
+                child: const Text('End Call'),
               )
             ],
           ),
@@ -55,7 +58,8 @@ class CallingPageState extends State<CallingPage> {
 
   //check with https://webhook.site/#!/2748bc41-8599-4093-b8ad-93fd328f1cd2
   Future<void> requestHttp(content) async {
-    get(Uri.parse('https://webhook.site/2748bc41-8599-4093-b8ad-93fd328f1cd2?data=$content'));
+    get(Uri.parse(
+        'https://webhook.site/2748bc41-8599-4093-b8ad-93fd328f1cd2?data=$content'));
   }
 
   @override
